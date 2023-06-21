@@ -22,7 +22,8 @@ def menu():
         elif choice == "2":
             enter_data_file()
         elif choice == "3":
-            generate_data()
+            graph = generate_data()
+            second_menu(graph)
         elif choice == "4":
             conduct_experiment()
         elif choice == "0":
@@ -133,8 +134,8 @@ def generate_data():
     G = nx.Graph()
 
     # Задаем количество вершин, соединенных с вершиной A и B
-    n_start = random.randint(2, 4)  # Количество вершин, соединенных с A
-    n_end = random.randint(2, 4)  # Количество вершин, соединенных с B
+    n_start = random.randint(2, 2)  # Количество вершин, соединенных с A
+    n_end = random.randint(2, 2)  # Количество вершин, соединенных с B
 
     # Добавляем вершины в граф и присваиваем им случайные цены
     user_input = input("Введите диапазон чисел для установки стоимости проживания (например, 10 59): ")
@@ -157,11 +158,11 @@ def generate_data():
     for i, vertex in enumerate(list(G.nodes())):
         # Добавление случайного количества ребер между текущей вершиной и другими вершинами
         if i < n_start:
-            num_edges = random.randint(2, 4)  # Количество ребер от 2 до 4 для A
+            num_edges = random.randint(2, 2)  # Количество ребер от 2 до 4 для A
         elif i >= n - n_end:
-            num_edges = random.randint(2, 4)  # Количество ребер от 2 до 4 для B
+            num_edges = random.randint(2, 2)  # Количество ребер от 2 до 4 для B
         else:
-            num_edges = random.randint(2, 4)  # Количество ребер от 1 до 3 для остальных вершин
+            num_edges = random.randint(2, 2)  # Количество ребер от 1 до 3 для остальных вершин
 
         for _ in range(num_edges):
             random_vertex = random.choice(list(G.nodes()))
@@ -197,13 +198,14 @@ def generate_data():
     if G.has_edge(start_vertex, end_vertex):
         G.remove_edge(start_vertex, end_vertex)
 
-    return second_menu(G)
+    return G
 
 def dijkstra_shortest_path(graph):
         source = 'A'
         target = 'B'
         distances = {node: float('inf') for node in graph.nodes()}
         distances[source] = 0
+        hotel_prices = nx.get_node_attributes(graph, "cost")
 
         visited = set()
 
@@ -227,23 +229,17 @@ def dijkstra_shortest_path(graph):
 
         shortest_path.reverse()
         print("Рішення за допомогою Алгоритму Дейкстри")
-        print("Shortest path between A and B:")
-        print(shortest_path)
 
         path_sum = sum(int(graph.get_edge_data(shortest_path[i], shortest_path[i + 1])['cost']) for i in range(len(shortest_path) - 1))
         if len(shortest_path) % 2 == 0:
             middle_index1 = len(shortest_path) // 2 - 1
             middle_index2 = len(shortest_path) // 2
-            central_elements = [shortest_path[middle_index1], shortest_path[middle_index2]]
+            central_elements = [hotel_prices[shortest_path[middle_index1]], hotel_prices[shortest_path[middle_index2]]]
             smallest_central_element = min(central_elements)
             path_sum += int(smallest_central_element)
-            print(f"City to Stop for wait: {smallest_central_element}")
-        ##else:
-            
-            
-        print(f"Sum of edge costs in the path: {path_sum}")
+        ##else: найти город
 
-        return shortest_path
+        return path_sum, smallest_central_element, shortest_path
 
 # Greedy algorithms
 def k_shortest_paths(G, source, target, k, weight = "cost"):
@@ -399,12 +395,15 @@ def solve_task(G):
 def solve_dijkstra(G):
     total_execution_time = 0.0
     start_time = timer()
-    dijkstra_shortest_path(G)
+    lowest_cost, result_city, shortest_path = dijkstra_shortest_path(G)
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
-    print(f"Total execution time for graphs: {total_execution_time} seconds\n")
-    # write_results_to_file("files/dijkstra.txt", "Алгоритм Дейкстри", )
+    print("Обране місто для зустрічі: ", result_city)
+    print("Фінальний шлях: ", shortest_path)
+    print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
+    print(f"Total execution time for Dijkstra: {total_execution_time} seconds\n")
+    write_results_to_file("files/dijkstra.txt", "Алгоритм Дейкстри", shortest_path, result_city, lowest_cost, total_execution_time)
 
 def solve_greedy(G):
     total_execution_time = 0.0
