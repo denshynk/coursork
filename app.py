@@ -65,7 +65,7 @@ def thirst_menu ():
         print("Підменю Експерименту :")
         print("1. Експеримент на розмірнсть масиву графа (10, 100, 200, 500, 1000)")
         print("2. Експиремент на зміну зєднань вершин графу")
-        print("3. Експеримент роботи жадібного модивікованого алгоритму на зміну K")
+        print("3. Експеримент роботи жадібного модивікованого алгоритму на зміну k")
         print("0. Завершити роботу")
 
         choice = input("\nВиберіть пункт підменю: \n")
@@ -476,17 +476,18 @@ def solve_greedy_modified(G, k=None, value=None, value_connections=None):
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
     print(f"Total execution time for Greedy Algorithm Modified: {total_execution_time} seconds", '\n')
-    write_results_to_file("files/greedy_modified.txt", "Жадібний алгоритм модифікований", shortest_path, result_city, lowest_cost, total_execution_time, value, value_connections)
+    write_results_to_file("files/greedy_modified.txt", "Жадібний алгоритм модифікований", shortest_path, result_city, lowest_cost, total_execution_time, value, value_connections, k)
 
-def write_results_to_file(file_name, algorithm_name, shortest_path, result_city, lowest_cost, total_execution_time, value=None, value_connections= None):
+def write_results_to_file(file_name, algorithm_name, shortest_path, result_city, lowest_cost, total_execution_time, value=None, value_connections= None, k=None):
     str0 = f"{algorithm_name}. Результати виконання.\n "
     str9 = f"Розмірність графа: {value}\n" if value is not None else ''
     str10 = f"Зєднання ребр в проміжку: {value_connections}\n" if value_connections is not None else ''
+    str11 = f"Значення параметру к: {k}\n" if k is not None else ''
     str1 = f"Обране місто для зустрічі: {result_city}\n"
     str2 = f"Фінальний шлях: {shortest_path}\n"
     str3 = f"Сумарні витрати на подорож (ЦФ): {lowest_cost}\n"
     str4 = f"Час виконання алгоритму: {total_execution_time} секунд\n\n"
-    file_contents = [str0, str9, str10, str1, str2, str3, str4]
+    file_contents = [str0, str9, str10,  str11, str1, str2, str3, str4]
     file = open(file_name, 'a', encoding="utf-8")
     file.writelines(file_contents)
     file.close()
@@ -518,19 +519,15 @@ def conduct_experiment():
     
 def connection_experiment():
     print("Проведення експерименту змінення кількості ребер")
-    n = [10, 100, 200, 500, 1000]
-    connections = ['2 2', '2 3', '3 3']
-    cost_city = '10 59'
+    n = 100
+    cost_city = ['10 59', '200 500', '500 1500', '1500 5000', '5000 10000']
     cost_way = '10 59'
-    k = 2
-    for i in range(len(n)):
-        value = n[i]
-        for j in range(len(connections)):
-            value_connections = connections[j]
-            graph = generate_data(value, cost_city, cost_way, value_connections)
-            solve_dijkstra(graph, value, value_connections)
-            solve_greedy(graph, value, value_connections)
-            solve_greedy_modified(graph, k, value, value_connections)
+    k = 10
+    for i in range(len(cost_city)):
+        graph = generate_data(n, cost_city[i], cost_way)
+        solve_dijkstra(graph, n)
+        solve_greedy(graph, n)
+        solve_greedy_modified(graph, k, n)
         
         # НЕ РАБОТАЕТ ДЛЯ ГРАФА РАЗМЕРНОСТИ 1000!
         #pos = nx.spring_layout(graph)
@@ -545,17 +542,15 @@ def connection_experiment():
     msvcrt.getch()# Ожидание нажатия клавиши
     
 def greedy_modified_experiment():
-    print("Проведення експерименту змінення якогось K")
-    n = [10, 100, 200, 300]
+    print("Проведення експерименту змінення k")
+    n = 300
     k = [1, 2, 3, 4, 5]
-    cost_city = '10 59'
-    cost_way = '10 59'
-    for i in range(len(n)):
-        value = n[i]
-        for j in range(len(k)):
-            value_k = k[j]
-            graph = generate_data(value, cost_city, cost_way)
-            solve_greedy_modified(graph, value_k, value)
+    cost_city = '10000 20000'
+    cost_way = '500 1100'
+    graph = generate_data(n, cost_city, cost_way)
+    for j in range(len(k)):
+        value_k = k[j]
+        solve_greedy_modified(graph, value_k, n)
         
         #НЕ РАБОТАЕТ ДЛЯ ГРАФА РАЗМЕРНОСТИ 1000!
             #pos = nx.spring_layout(graph)
