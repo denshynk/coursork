@@ -282,7 +282,6 @@ def dijkstra_shortest_path(graph):
 
         return path_sum, lowest_cost_city, shortest_path
 
-# Greedy algorithms
 def k_shortest_paths(G, source, target, k, weight = "cost"):
     return list(
         islice(nx.shortest_simple_paths(G, source, target, weight=weight), k)
@@ -443,6 +442,7 @@ def solve_dijkstra(G, value=None, value_connections=None):
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
+    print(f"Розмірність графа: {value}\n" if value is not None else '')
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
@@ -456,6 +456,7 @@ def solve_greedy(G, value=None, value_connections=None):
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
+    print(f"Розмірність графа: {value}\n" if value is not None else '')
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
@@ -472,6 +473,7 @@ def solve_greedy_modified(G, k=None, value=None, value_connections=None):
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
+    print(f"Розмірність графа: {value}\n" if value is not None else '')
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
