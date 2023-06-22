@@ -64,7 +64,7 @@ def thirst_menu ():
     while True:
         print("Підменю Експерименту :")
         print("1. Експеримент на розмірнсть масиву графа (10, 100, 200, 500, 1000)")
-        print("2. Експиремент на зміну зєднань вершин графу")
+        print("2. Експеримент різниці вартосі пересування і готелів")
         print("3. Експеримент роботи жадібного модивікованого алгоритму на зміну k")
         print("0. Завершити роботу")
 
@@ -74,7 +74,7 @@ def thirst_menu ():
             conduct_experiment()
         elif choice == "2":
             print("Експиремент на зміну зєднань вершин графу\n")
-            connection_experiment()
+            prices_difference_experiment()
         elif choice == "3":
             print()
             greedy_modified_experiment()
@@ -435,35 +435,41 @@ def solve_task(G):
     print("Нажмите любую клавишу для продолжения...")
     msvcrt.getch()# Ожидание нажатия клавиши
     
-def solve_dijkstra(G, value=None, value_connections=None):
+def solve_dijkstra(G, value=None, cost_city = None):
     total_execution_time = 0.0
     start_time = timer()
     lowest_cost, result_city, shortest_path = dijkstra_shortest_path(G)
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
-    print(f"Розмірність графа: {value}\n" if value is not None else '')
+    if value is not None:
+        print(f"Розмірність графа: {value}" if value is not None else '')
+    if cost_city is not None:
+        print(f"Мінімально і максимально можливі вартості готелів: {cost_city}")
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
     print(f"Total execution time for Dijkstra: {total_execution_time} seconds\n")
-    write_results_to_file("files/dijkstra.txt", "Алгоритм Дейкстри", shortest_path, result_city, lowest_cost, total_execution_time, value, value_connections)
+    write_results_to_file("files/dijkstra.txt", "Алгоритм Дейкстри", shortest_path, result_city, lowest_cost, total_execution_time, value, cost_city=cost_city)
 
-def solve_greedy(G, value=None, value_connections=None):
+def solve_greedy(G, value=None, cost_city = None):
     total_execution_time = 0.0
     start_time = timer()
     lowest_cost, result_city, shortest_path = greedy(G)
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
-    print(f"Розмірність графа: {value}\n" if value is not None else '')
+    if value is not None:
+        print(f"Розмірність графа: {value}" if value is not None else '')
+    if cost_city is not None:
+        print(f"Мінімально і максимально можливі вартості готелів: {cost_city}")
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
     print(f"Total execution time for Greedy Algorithm: {total_execution_time} seconds", '\n')
-    write_results_to_file("files/greedy.txt", "Жадібний алгоритм", shortest_path, result_city, lowest_cost, total_execution_time, value, value_connections)
+    write_results_to_file("files/greedy.txt", "Жадібний алгоритм", shortest_path, result_city, lowest_cost, total_execution_time, value, cost_city=cost_city)
 
-def solve_greedy_modified(G, k=None, value=None, value_connections=None):
+def solve_greedy_modified(G, k=None, value=None, cost_city = None):
     print('Greedy Algorithm Modified: ')
     if k is None:
         k = int(input('Введіть значення k: '))
@@ -473,18 +479,22 @@ def solve_greedy_modified(G, k=None, value=None, value_connections=None):
     end_time = timer()
     execution_time = (end_time - start_time)
     total_execution_time += execution_time
-    print(f"Розмірність графа: {value}\n" if value is not None else '')
+    if value is not None:
+        print(f"Розмірність графа: {value}" if value is not None else '')
+    if cost_city is not None:
+        print(f"Мінімально і максимально можливі вартості готелів: {cost_city}")
+    print(f"Значення параметру k: {k}" if k is not None else '')
     print("Обране місто для зустрічі: ", result_city)
     print("Фінальний шлях: ", shortest_path)
     print("Сумарні витрати на подорож (ЦФ): ", lowest_cost)
     print(f"Total execution time for Greedy Algorithm Modified: {total_execution_time} seconds", '\n')
-    write_results_to_file("files/greedy_modified.txt", "Жадібний алгоритм модифікований", shortest_path, result_city, lowest_cost, total_execution_time, value, value_connections, k)
+    write_results_to_file("files/greedy_modified.txt", "Жадібний алгоритм модифікований", shortest_path, result_city, lowest_cost, total_execution_time, value, k, cost_city=cost_city)
 
-def write_results_to_file(file_name, algorithm_name, shortest_path, result_city, lowest_cost, total_execution_time, value=None, value_connections= None, k=None):
-    str0 = f"{algorithm_name}. Результати виконання.\n "
+def write_results_to_file(file_name, algorithm_name, shortest_path, result_city, lowest_cost, total_execution_time, value=None, k=None, cost_city = None):
+    str0 = f"{algorithm_name}. Результати виконання.\n"
     str9 = f"Розмірність графа: {value}\n" if value is not None else ''
-    str10 = f"Зєднання ребр в проміжку: {value_connections}\n" if value_connections is not None else ''
-    str11 = f"Значення параметру к: {k}\n" if k is not None else ''
+    str10 = f"Мінімально і максимально можливі вартості готелів: {cost_city}\n" if value is not None else ''
+    str11 = f"Значення параметру k: {k}\n" if k is not None else ''
     str1 = f"Обране місто для зустрічі: {result_city}\n"
     str2 = f"Фінальний шлях: {shortest_path}\n"
     str3 = f"Сумарні витрати на подорож (ЦФ): {lowest_cost}\n"
@@ -495,11 +505,13 @@ def write_results_to_file(file_name, algorithm_name, shortest_path, result_city,
     file.close()
 
 def conduct_experiment():
-    print("Проведення експерименту збільшення розміру графа")
+    print("Проведення експерименту збільшення розміру графа.")
     n = [10, 100, 200, 500, 1000]
     cost_city = '10 59'
     cost_way = '10 59'
-    k = 2
+    k = 4
+    print(f"Мінімально і максимально можливі вартості готелів: {cost_city}")
+    print(f"Мінімально і максимально можливі вартості пересування між городами: {cost_way}\n")
     for i in range(len(n)):
         value = n[i]
         graph = generate_data(value, cost_city, cost_way)
@@ -519,17 +531,19 @@ def conduct_experiment():
     print("Нажмите любую клавишу для продолжения...")
     msvcrt.getch()# Ожидание нажатия клавиши
     
-def connection_experiment():
-    print("Проведення експерименту змінення кількості ребер")
+def prices_difference_experiment():
+    print("Проведення експерименту різниці вартосі пересування і готелів.")
     n = 100
     cost_city = ['10 59', '200 500', '500 1500', '1500 5000', '5000 10000']
     cost_way = '10 59'
     k = 10
+    print(f"Розмірність графа: {n}")
+    print(f"Мінімально і максимально можливі вартості пересування між городами: {cost_way}\n")
     for i in range(len(cost_city)):
         graph = generate_data(n, cost_city[i], cost_way)
-        solve_dijkstra(graph, n)
-        solve_greedy(graph, n)
-        solve_greedy_modified(graph, k, n)
+        solve_dijkstra(graph, cost_city=cost_city[i])
+        solve_greedy(graph, cost_city=cost_city[i])
+        solve_greedy_modified(graph, k, cost_city=cost_city[i])
         
         # НЕ РАБОТАЕТ ДЛЯ ГРАФА РАЗМЕРНОСТИ 1000!
         #pos = nx.spring_layout(graph)
@@ -544,15 +558,18 @@ def connection_experiment():
     msvcrt.getch()# Ожидание нажатия клавиши
     
 def greedy_modified_experiment():
-    print("Проведення експерименту змінення k")
-    n = 300
-    k = [1, 2, 3, 4, 5]
+    print("Проведення експерименту змінення k.")
+    n = 30
+    k = [1, 10, 50, 100]
     cost_city = '10000 20000'
     cost_way = '500 1100'
     graph = generate_data(n, cost_city, cost_way)
+    print(f"Розмірність графа: {n}")
+    print(f"Мінімально і максимально можливі вартості готелів: {cost_city}")
+    print(f"Мінімально і максимально можливі вартості пересування між городами: {cost_way}\n")
     for j in range(len(k)):
         value_k = k[j]
-        solve_greedy_modified(graph, value_k, n)
+        solve_greedy_modified(graph, value_k)
         
         #НЕ РАБОТАЕТ ДЛЯ ГРАФА РАЗМЕРНОСТИ 1000!
             #pos = nx.spring_layout(graph)
