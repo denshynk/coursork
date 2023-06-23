@@ -88,13 +88,13 @@ def enter_data_manually():
     G = nx.Graph()
 
     # Ввод количества вершин в графе
-    num_vertices = int(input("Введите количество вершин в графе: "))
+    num_vertices = int(input("Введіть кількість міст: "))
 
     # Ввод вершин и их весов
     for i in range(num_vertices):
         i += 1
         vertex = str(i)
-        cost = int(input(f"Введите вес для вершины {vertex}: "))
+        cost = int(input(f"Введіть вартість проживання в готелі для міста {vertex}: "))
         G.add_node(vertex, cost=cost)
 
     # Автоматическое добавление вершин A и B
@@ -103,17 +103,17 @@ def enter_data_manually():
 
     # Ввод ребер и их весов
     while True:
-        edge_input = input("Введите ребро (формат: вершина1 вершина2, или оставьте пустым для завершения): ")
+        edge_input = input("Введіть сполучення між містами (формат: місто1 місто2, або залиште порожнім для завершення): ")
         if not edge_input:
             break
 
         u, v = edge_input.split()
         # Проверка, что вершины u и v существуют в графе
         if u in G.nodes() and v in G.nodes():
-            edge_cost = int((input(f"Введите вес для ребра ({u}, {v}): ")))
+            edge_cost = int((input(f"Введіть вартість пересування між містами ({u}, {v}): ")))
             G.add_edge(u, v, cost=edge_cost)
         else:
-            print("Ошибка: одна или обе вершины не существуют в графе.")
+            print("Помилка: одна або обидві вершини не існують в графі.")
 
     return second_menu(G)
 
@@ -532,7 +532,7 @@ def conduct_experiment():
     msvcrt.getch()# Ожидание нажатия клавиши
     
 def prices_difference_experiment():
-    print("Проведення експерименту різниці вартосі пересування і готелів.")
+    print("Проведення експерименту різниці вартості пересування і готелів.")
     n = 100
     cost_city = ['10 59', '200 500', '500 1500', '1500 5000', '5000 10000']
     cost_way = '10 59'
